@@ -28,10 +28,10 @@ app.use("/common-api", commonRouter);
 //connect to db
 const connectDB = async () => {
   try {
-    if (!process.env.DB_URL || process.env.DB_URL.includes("localhost")) {
-      console.error("❌ Error: DB_URL is missing or pointing to localhost. Please set a valid MongoDB Atlas URI in Render Environment Variables.");
-      process.exit(1);
-    }
+    // Diagnostic log (doesn't show password)
+    const maskedUrl = process.env.DB_URL.replace(/\/\/.*@/, "//<user>:<password>@");
+    console.log(`Connecting to DB... (URL pattern: ${maskedUrl})`);
+    
     await connect(process.env.DB_URL);
     console.log("DB connection success");
 
