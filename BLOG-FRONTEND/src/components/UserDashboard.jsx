@@ -29,7 +29,7 @@ function UserDashboard() {
   //read articles of all authors
   const getArticles = async () =>{
     try{
-      let res = await axios.get("http://localhost:4000/user-api/articles", {withCredentials:true})
+      let res = await axios.get("https://blog-app-1-kny9.onrender.com/user-api/articles", {withCredentials:true})
       setArticles(res.data.payload)
     }catch(err){
       console.log(err)

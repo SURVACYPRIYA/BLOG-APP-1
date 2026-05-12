@@ -46,7 +46,7 @@ function Register() {
       if(role === "user"){
 
         let resObj = await axios.post(
-          "http://localhost:4000/user-api/users",
+          "https://blog-app-1-kny9.onrender.com/user-api/users",
           formData
         );
 
@@ -59,7 +59,7 @@ function Register() {
       if(role === "author"){
 
         let resObj = await axios.post(
-          "http://localhost:4000/author-api/users",
+          "https://blog-app-1-kny9.onrender.com/author-api/users",
           formData
         );
 

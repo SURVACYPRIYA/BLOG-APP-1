@@ -16,7 +16,7 @@ function ArticleByID() {
     try{
 
       let res = await axios.get(
-        `http://localhost:4000/author-api/article/${articleId}`
+        `https://blog-app-1-kny9.onrender.com/author-api/article/${articleId}`
       )
 
       setArticle(res.data.payload)

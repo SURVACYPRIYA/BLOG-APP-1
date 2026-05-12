@@ -41,7 +41,7 @@ function EditArticle() {
     try {
 
     await axios.put(
-      `http://localhost:4000/author-api/article/${id}`,
+      `https://blog-app-1-kny9.onrender.com/author-api/article/${id}`,
       data,
       { withCredentials:true }
     )
@@ -58,7 +58,7 @@ function EditArticle() {
   const getArticleById = async ()=>{
   try{
     let res = await axios.get(
-      `http://localhost:4000/author-api/article/${id}`
+      `https://blog-app-1-kny9.onrender.com/author-api/article/${id}`
     )
     setArticleData(res.data.payload)
   }catch(err){

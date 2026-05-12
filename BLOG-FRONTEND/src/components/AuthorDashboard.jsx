@@ -21,7 +21,7 @@ function AuthorDashboard() {
   const getArticles = async () =>{
   try{
     let res = await axios.get(
-      `http://localhost:4000/author-api/articles/${currentUser._id}`,
+      `https://blog-app-1-kny9.onrender.com/author-api/articles/${currentUser._id}`,
       {withCredentials:true}
     )
     setArticles(res.data.payload)
