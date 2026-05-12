@@ -12,6 +12,12 @@ config(); //process.env
 
 //Create express application
 const app = exp();
+
+// Add root route for health check
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to the Blog App API! The backend is running successfully." });
+});
+
 //use cors middleware
 app.use(cors({ origin: "*", credentials: true })); // allow all origins on Render
 //add body parser middleware
