@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken" // for encrypting
-import bcrypt from "bcrypt"
+import bcrypt from "bcryptjs"
 import { UserTypeModel } from "../models/UserModel.js";
 import { config } from "dotenv";
 config()
