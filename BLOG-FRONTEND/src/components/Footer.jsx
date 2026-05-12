@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router';
-import { Code, Send, Briefcase, PenTool } from "lucide-react"
+import { Github, Twitter, Linkedin, PenTool } from "lucide-react"
 
 function Footer() {
   return (
@@ -31,13 +31,13 @@ function Footer() {
             <h4 className="font-bold mb-6 text-white uppercase tracking-widest text-sm">Connect</h4>
             <div className="flex gap-4">
               <a href="#" className="w-10 h-10 rounded-full bg-white/5 border border-glass-border flex items-center justify-center hover:bg-primary hover:border-primary transition-all">
-                <Code size={20} />
+                <Github size={20} />
               </a>
               <a href="#" className="w-10 h-10 rounded-full bg-white/5 border border-glass-border flex items-center justify-center hover:bg-primary hover:border-primary transition-all">
-                <Send size={20} />
+                <Twitter size={20} />
               </a>
               <a href="#" className="w-10 h-10 rounded-full bg-white/5 border border-glass-border flex items-center justify-center hover:bg-primary hover:border-primary transition-all">
-                <Briefcase size={20} />
+                <Linkedin size={20} />
               </a>
             </div>
           </div>
