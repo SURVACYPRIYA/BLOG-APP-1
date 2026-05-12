@@ -6,7 +6,11 @@ function ProtectedRoute({ children, allowedRoles }) {
   const { loading, currentUser, isAuthenticated, logout } = useAuth();
   //loading state
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+      </div>
+    );
   }
   //if user not loggedin
   if (!isAuthenticated) {
