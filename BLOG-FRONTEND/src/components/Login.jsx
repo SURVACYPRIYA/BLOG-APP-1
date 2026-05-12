@@ -1,95 +1,57 @@
 import { useForm } from "react-hook-form";
 import { useAuth } from "../store/authStore";
 import { useEffect } from "react";
-import { useNavigate, NavLink } from "react-router";
-import { toast } from 'react-hot-toast'
-import { LogIn, Mail, Lock, ShieldAlert, Loader2 } from "lucide-react"
+import { useNavigate } from "react-router";
+import { errorClass } from "../styles/common";
+import { submitBtn } from "../styles/common";
+import {toast} from 'react-hot-toast'
 
 function Login() {
-  const { register, handleSubmit, formState: { errors } } = useForm()
-  const { login, isAuthenticated, currentUser, error, loading } = useAuth()
+
+  const {register,handleSubmit,formState:{errors}}=useForm()
+  const login = useAuth(state => state.login)
+  const isAuthenticated = useAuth((state)=> state.isAuthenticated)
+  const currentUser = useAuth((state)=>state.currentUser)
+  const error = useAuth((state)=>state.error)
   const navigate = useNavigate()
 
-  const onUserLogin = async (userCredObj) => {
+  //console.log(("isAuthenticated: ",isAuthenticated))
+  const onUserLogin = async(userCredObj) => {
     await login(userCredObj)
   }
-
-  useEffect(() => {
-    if (isAuthenticated && currentUser) {
-      toast.success("Welcome back!")
-      if (currentUser.role === "USER") navigate("/userdashboard")
-      else if (currentUser.role === "AUTHOR") navigate("/authordashboard")
-      else if (currentUser.role === "ADMIN") navigate("/admindashboard")
+  useEffect(()=>{
+    if (isAuthenticated){
+      if(currentUser.role === "USER"){
+        toast.success("Logged in successfully")
+        navigate("/userdashboard")
+      }
+    if(currentUser.role === "AUTHOR"){
+      toast.success("Logged in successfully")
+      navigate("/authordashboard")
     }
-  }, [isAuthenticated, currentUser, navigate])
+  }},[isAuthenticated,currentUser])
 
-  return (
-    <div className="min-h-screen flex items-center justify-center pt-20 px-4">
-      <div className="glass-card w-full max-w-md p-10 animate-fade relative overflow-hidden">
-        {/* Header */}
-        <div className="text-center mb-10">
-          <div className="w-16 h-16 bg-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-primary">
-            <LogIn size={32} />
-          </div>
-          <h2 className="text-3xl font-bold gradient-text">Welcome Back</h2>
-          <p className="text-text-muted mt-2">Enter your credentials to continue</p>
-        </div>
+  const onSubmit=(data)=>{
+    console.log(data)
+  }
 
+  return(
+    <div className="flex justify-center mt-10">
+      <form onSubmit={handleSubmit(onUserLogin)} className="w-80 space-y-4">
         {error && (
-          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3 text-red-400 text-sm animate-fade">
-            <ShieldAlert size={18} />
-            {error}
-          </div>
-        )}
+  <p className={errorClass}>
+    {error}
+  </p>
+)}
+        <h2 className="text-xl text-center">Login</h2>
 
-        <form onSubmit={handleSubmit(onUserLogin)} className="space-y-6">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-text-muted ml-1">Email Address</label>
-            <div className="relative">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
-              <input 
-                type="email" 
-                placeholder="name@example.com" 
-                {...register("email", { required: "Email is required" })} 
-                className="input-field pl-12" 
-              />
-            </div>
-            {errors.email && <p className="text-xs text-red-400 ml-1">{errors.email.message}</p>}
-          </div>
+        <input type="email" placeholder="Email" {...register("email",{required:true})} className="border w-full p-2" />
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-text-muted ml-1">Password</label>
-            <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
-              <input 
-                type="password" 
-                placeholder="••••••••" 
-                {...register("password", { required: "Password is required" })} 
-                className="input-field pl-12" 
-              />
-            </div>
-            {errors.password && <p className="text-xs text-red-400 ml-1">{errors.password.message}</p>}
-          </div>
+        <input type="password" placeholder="Password" {...register("password",{required:true})} className="border w-full p-2" />
 
-          <button 
-            disabled={loading}
-            className="btn-primary w-full py-4 text-lg mt-4 justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? <Loader2 className="animate-spin" size={24} /> : "Sign In"}
-          </button>
-        </form>
+        <button className={submitBtn}> Login </button>
 
-        <p className="text-center mt-8 text-text-muted text-sm">
-          Don't have an account?{" "}
-          <NavLink to="/register" className="text-primary font-semibold hover:underline">
-            Create one now
-          </NavLink>
-        </p>
-      </div>
-      
-      {/* Background Blobs */}
-      <div className="absolute top-1/4 left-1/4 -z-10 w-96 h-96 bg-primary/10 blur-[100px] rounded-full"></div>
-      <div className="absolute bottom-1/4 right-1/4 -z-10 w-96 h-96 bg-accent/10 blur-[100px] rounded-full"></div>
+      </form>
     </div>
   )
 }

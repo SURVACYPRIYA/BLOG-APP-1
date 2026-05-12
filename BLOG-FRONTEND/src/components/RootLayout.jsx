@@ -15,17 +15,7 @@ function RootLayout() {
 
   //wait until auth check completes
   if(loading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-6">
-        <div className="relative">
-          <div className="w-20 h-20 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-10 h-10 bg-primary/10 rounded-full animate-pulse"></div>
-          </div>
-        </div>
-        <p className="text-xl font-medium text-text-muted animate-pulse">Initializing InsightFlow...</p>
-      </div>
-    )
+    return <p className="text-center mt-10">Loading...</p>
   }
 
 
