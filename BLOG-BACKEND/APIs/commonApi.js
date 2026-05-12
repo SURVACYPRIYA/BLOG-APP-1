@@ -1,5 +1,5 @@
 import exp from "express";
-import { authenticate } from "../services/authService.js";
+import { authenticate } from "../Services/authService.js";
 import { UserTypeModel } from "../models/UserModel.js";
 import bcrypt from "bcryptjs";
 export const commonRouter = exp.Router();

@@ -13,7 +13,7 @@ config(); //process.env
 //Create express application
 const app = exp();
 //use cors middleware
-app.use(cors({ origin: "http://localhost:5173" , credentials:true})); //credentials allow browser to recieve the token
+app.use(cors({ origin: "*", credentials: true })); // allow all origins on Render
 //add body parser middleware
 app.use(exp.json());
 //add cookie parser middleware
