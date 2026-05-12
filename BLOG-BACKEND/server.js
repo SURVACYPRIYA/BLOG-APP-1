@@ -19,7 +19,12 @@ app.get("/", (req, res) => {
 });
 
 //use cors middleware
-app.use(cors({ origin: "*", credentials: true })); // allow all origins on Render
+app.use(
+  cors({
+    origin: "https://blog-app-1-beta.vercel.app",
+    credentials: true,
+  })
+);
 //add body parser middleware
 app.use(exp.json());
 //add cookie parser middleware
