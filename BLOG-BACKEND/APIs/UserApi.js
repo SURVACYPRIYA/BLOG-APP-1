@@ -50,9 +50,15 @@ userRoute.post("/users",upload.single("profileImageUrl"),async (req, res, next) 
 
 //Read all articles(protected route)
 
-userRoute.get('/articles',verifyToken("USER"),async(req,res)=>{
-    let articles=await ArticleModel.find({isArticleActive:true}).populate("comment.user")
-    res.status(200).json({message:"Articles",payload:articles})
+userRoute.get('/articles',verifyToken("USER"),async(req,res,next)=>{
+    try {
+        let articles=await ArticleModel.find({isArticleActive:true})
+            .populate("author", "firstName email")
+            .populate("comments.user");
+        res.status(200).json({message:"Articles",payload:articles})
+    } catch(err) {
+        next(err);
+    }
 })
 
 //Add comment to an article
