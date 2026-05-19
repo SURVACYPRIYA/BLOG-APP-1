@@ -1,138 +1,344 @@
-# ⚙️ The Codex | Backend API Documentation
+# 🖥️ BlogApp Backend
 
-This directory contains the robust, production-grade RESTful API server powering **The Codex**. Built with the modern MERN stack, the backend manages authentication via secure cookies, database interactions via Mongoose, and media file uploads to Cloudinary CDN.
-
----
-
-## 🛠️ Tech Stack & Key Modules
-
-*   **Runtime:** Node.js (v18+)
-*   **Framework:** Express.js (v5)
-*   **Database ODM:** Mongoose (MongoDB)
-*   **Authentication:** JSON Web Tokens (JWT) & `cookie-parser`
-*   **Security:** `bcryptjs` (password hashing) & `cors` (origin validation)
-*   **Media Handling:** `multer` (multipart/form-data) & `cloudinary` (image hosting)
+A scalable and secure backend server powering the **BlogApp MERN platform**.
+Built using **Express.js**, **MongoDB**, and **JWT Authentication**, this backend provides APIs for authentication, article management, comments, and role-based access control.
 
 ---
 
-## 🔑 Environment Configuration
+# 🚀 Live Deployment
 
-Create a `.env` file in the root of this folder (`/BLOG-BACKEND/.env`):
+| Service     | Status  | Link                                                                           |
+| ----------- | ------- | ------------------------------------------------------------------------------ |
+| Backend API | 🟢 Live | [Render Deployment](https://blog-app-1-kny9.onrender.com) |
+
+---
+
+# 📌 Features
+
+## 🔐 Authentication & Authorization
+
+* JWT-based authentication
+* Secure HttpOnly cookie storage
+* Role-based authorization
+* Protected routes middleware
+* Persistent login session
+* Logout functionality
+
+---
+
+## 📝 Article Management
+
+* Create articles
+* Edit existing articles
+* Soft delete / restore articles
+* Fetch all active articles
+* Fetch author-specific articles
+* Add comments to articles
+
+---
+
+## 👤 User Management
+
+* Register as User or Author
+* Secure password hashing using bcryptjs
+* Profile image support
+* Role handling:
+
+  * `USER`
+  * `AUTHOR`
+  * `ADMIN`
+
+---
+
+## ☁️ Cloudinary Integration
+
+* Image uploads for blog articles
+* Cloud-based media storage
+* Optimized image delivery
+
+---
+
+# 🛠️ Tech Stack
+
+## Backend Framework
+
+| Technology | Purpose            |
+| ---------- | ------------------ |
+| Node.js    | JavaScript Runtime |
+| Express.js | REST API Framework |
+| MongoDB    | NoSQL Database     |
+| Mongoose   | ODM for MongoDB    |
+
+---
+
+## Security & Authentication
+
+| Package       | Purpose                      |
+| ------------- | ---------------------------- |
+| jsonwebtoken  | JWT token generation         |
+| bcryptjs      | Password hashing             |
+| cookie-parser | Cookie handling              |
+| cors          | Secure cross-origin requests |
+
+---
+
+## Media & File Uploads
+
+| Package    | Purpose                |
+| ---------- | ---------------------- |
+| multer     | Multipart file uploads |
+| cloudinary | Cloud image hosting    |
+
+---
+
+## Environment & Utilities
+
+| Package | Purpose                   |
+| ------- | ------------------------- |
+| dotenv  | Environment configuration |
+
+---
+
+# 📂 Project Structure
+
+```bash
+BLOG-BACKEND/
+│
+├── APIs/
+│   ├── AdminApi.js
+│   ├── AuthorApi.js
+│   ├── UserApi.js
+│   └── commonApi.js
+│
+├── models/
+│   ├── userModel.js
+│   └── articleModel.js
+│
+├── middlewares/
+│   └── verifyToken.js
+│
+├── server.js
+├── package.json
+└── .env
+```
+
+---
+
+# ⚙️ Environment Variables
+
+Create a `.env` file in the root directory:
 
 ```env
-PORT=4000
-DB_URL=mongodb://localhost:27017/blog-backend-db
-JWT_SECRET=your_super_secure_jwt_secret_key
-CLOUD_NAME=your_cloudinary_cloud_name
-API_KEY=your_cloudinary_api_key
-API_SECRET=your_cloudinary_api_secret
+PORT=10000
+MONGO_URI=your_mongodb_connection
+JWT_SECRET=your_secret_key
+
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
 ```
 
 ---
 
-## 🗄️ Database Schemas & Models
+# 🧠 Database Design
 
-### 1. User Model (`UserModel.js`)
-Handles profiles for Readers (users), Authors, and Admins.
-```javascript
-{
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  profileImageUrl: { type: String },
-  role: { type: String, enum: ["user", "author", "admin"], required: true },
-  isActive: { type: Boolean, default: true }
-}
+## 👤 User Schema
+
+| Field           | Type    | Description           |
+| --------------- | ------- | --------------------- |
+| firstName       | String  | User first name       |
+| lastName        | String  | User last name        |
+| email           | String  | Unique email          |
+| password        | String  | Hashed password       |
+| profileImageUrl | String  | User profile image    |
+| role            | Enum    | USER / AUTHOR / ADMIN |
+| isActive        | Boolean | Account status        |
+
+---
+
+## 📝 Article Schema
+
+| Field           | Type     | Description        |
+| --------------- | -------- | ------------------ |
+| author          | ObjectId | Reference to User  |
+| title           | String   | Article title      |
+| category        | String   | Article category   |
+| content         | String   | Blog content       |
+| comments        | Array    | User comments      |
+| isArticleActive | Boolean  | Soft delete status |
+
+---
+
+# 🔒 Authentication Flow
+
+```text
+User Login
+   ↓
+JWT Token Generated
+   ↓
+Stored in HttpOnly Cookie
+   ↓
+verifyToken Middleware
+   ↓
+Protected Routes Access
 ```
 
-### 2. Article Model (`ArticleModel.js`)
-Handles articles, author references, and embedded comments.
-```javascript
-{
-  author: { type: Schema.Types.ObjectId, ref: "user", required: true },
-  title: { type: String, required: true },
-  category: { type: String, required: true },
-  content: { type: String, required: true },
-  comments: [
-    {
-      user: { type: Schema.Types.ObjectId, ref: "user" },
-      comment: { type: String },
-      createdAt: { type: Date }
-    }
-  ],
-  isArticleActive: { type: Boolean, default: true }
-}
+### Why HttpOnly Cookies?
+
+* Prevents XSS attacks
+* Tokens inaccessible from frontend JavaScript
+* More secure session handling
+
+---
+
+# 🌐 API Routes
+
+# Common Routes
+
+| Method | Endpoint                 | Description           |
+| ------ | ------------------------ | --------------------- |
+| POST   | `/common-api/register`   | Register new account  |
+| POST   | `/common-api/login`      | Login user            |
+| GET    | `/common-api/logout`     | Logout user           |
+| GET    | `/common-api/check-auth` | Verify authentication |
+
+---
+
+# User Routes
+
+| Method | Endpoint                               | Description        |
+| ------ | -------------------------------------- | ------------------ |
+| GET    | `/user-api/articles`                   | Fetch all articles |
+| PATCH  | `/user-api/article/:articleId/comment` | Add comment        |
+
+---
+
+# Author Routes
+
+| Method | Endpoint                                 | Description             |
+| ------ | ---------------------------------------- | ----------------------- |
+| POST   | `/author-api/article`                    | Create article          |
+| GET    | `/author-api/articles/:authorId`         | Fetch author's articles |
+| PUT    | `/author-api/article/:articleId`         | Update article          |
+| PATCH  | `/author-api/articles/:articleId/status` | Toggle article status   |
+
+---
+
+# 🧩 Middleware Used
+
+## CORS Middleware
+
+Configured to allow:
+
+* Local frontend URLs
+* Production Vercel deployments
+* Preview deployments ending with `.vercel.app`
+
+Your backend dynamically validates origins securely. 
+
+---
+
+## Error Handling Middleware
+
+Centralized error handling for:
+
+* Validation errors
+* Duplicate key errors
+* Cast errors
+* Custom API errors
+* Internal server errors
+
+
+
+---
+
+# 🚀 Running Locally
+
+## Install Dependencies
+
+```bash
+npm install
 ```
 
 ---
 
-## 📡 API Endpoints
+## Start Development Server
 
-### 🟢 Common API (`/common-api`)
-Public routes for account creation, sessions, and general authorization.
-
-| Method | Endpoint | Description | Request Payload |
-| :--- | :--- | :--- | :--- |
-| **POST** | `/common-api/login` | Authenticate user/author/admin | `{ email, password }` |
-| **GET** | `/common-api/logout` | Clear HTTP-Only session cookie | *None* |
-| **GET** | `/common-api/check-auth` | Verify current cookie token session | *None (Cookie needed)* |
-
-### 🔵 User (Reader) API (`/user-api`)
-Actions accessible to registered Readers.
-
-| Method | Endpoint | Description | Request Payload / Header |
-| :--- | :--- | :--- | :--- |
-| **POST** | `/user-api/users` | Register a new Reader account | `{ firstName, lastName, email, password }` |
-| **GET** | `/user-api/articles` | Get all active, published articles | *None (JWT Cookie)* |
-| **PUT** | `/user-api/articles` | Add a comment to an article | `{ user: userId, articleId, comment: "..." }` |
-
-### 🟣 Author API (`/author-api`)
-Actions accessible strictly to Authors.
-
-| Method | Endpoint | Description | Request Payload / Header |
-| :--- | :--- | :--- | :--- |
-| **POST** | `/author-api/users` | Register a new Author account | `{ firstName, lastName, email, password }` |
-| **POST** | `/author-api/articles` | Publish a new article | `{ author: authorId, title, category, content }` |
-| **GET** | `/author-api/articles/:authorId` | Get all articles written by the author | *None (JWT Cookie)* |
-| **PUT** | `/author-api/articles` | Update a published article | `{ author, articleId, title, category, content }` |
-| **PUT** | `/author-api/articles/:articleId` | Soft-delete or Restore an article | `{ isArticleActive: boolean }` |
-
-### 🔴 Admin API (`/admin-api`)
-Administrative oversight actions.
-
-| Method | Endpoint | Description | Request Payload / Header |
-| :--- | :--- | :--- | :--- |
-| **GET** | `/admin-api/articles` | View every article in the system | *None (JWT Cookie)* |
-| **PUT** | `/admin-api/block/:authorId` | Suspend/Block an Author's account | *None (JWT Cookie)* |
-| **PUT** | `/admin-api/unblock/:authorId`| Reactivate/Unblock an Author's account | *None (JWT Cookie)* |
+```bash
+npm run dev
+```
 
 ---
 
-## 🛡️ Middlewares
+## Start Production Server
 
-1.  **`verifyToken.js`:** Extracts the JWT from the `token` HTTP-Only cookie, verifies its signature, and attaches the decoded user payload to the request object (`req.user`).
-2.  **`checkAuthor.js`:** Verifies if the authenticated requester has the role of `"author"` before granting database write access.
-3.  **Global Error Handler (`server.js`):** Unified middleware catching:
-    *   Mongoose Validation/Cast Errors (Status `400`)
-    *   Mongo Duplicate Key Error `11000` (Status `409`)
-    *   Custom defined operational exceptions.
-    *   Fallback Internal Server Errors (Status `500`).
+```bash
+npm start
+```
 
 ---
 
-## 🚀 Running the API Locally
+# 📡 Deployment
 
-1.  Ensure local MongoDB is running:
-    ```bash
-    mongod
-    ```
-2.  Install packages:
-    ```bash
-    npm install
-    ```
-3.  Run startup script:
-    ```bash
-    npm start
-    ```
-4.  The server launches on the port specified in `.env` (default is `http://localhost:4000`).
+## Backend Deployment
+
+* Platform: Render
+* Auto deployment enabled from GitHub
+* Environment variables configured securely
+
+---
+
+# 🔐 Security Best Practices
+
+✅ Password hashing with bcryptjs
+✅ JWT authentication
+✅ HttpOnly cookies
+✅ Protected routes middleware
+✅ Environment variables using dotenv
+✅ Centralized error handling
+✅ CORS protection
+✅ Soft delete strategy for articles
+
+---
+
+# 📈 Future Improvements
+
+* Refresh token authentication
+* Email verification
+* Forgot password flow
+* Article likes system
+* Bookmark feature
+* Rich text editor support
+* Admin dashboard analytics
+* Rate limiting
+* API documentation with Swagger
+
+---
+
+# 🤝 Contribution
+
+Contributions are welcome.
+
+```bash
+# Fork the repository
+# Create a new branch
+git checkout -b feature-name
+
+# Commit changes
+git commit -m "Added new feature"
+
+# Push changes
+git push origin feature-name
+```
+
+---
+
+# 📜 License
+
+This project is licensed under the ISC License.
+
+---
+
+# 👨‍💻 Author
+
+Developed by Survacy Priya 🚀

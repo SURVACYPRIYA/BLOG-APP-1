@@ -1,107 +1,320 @@
-# 🎨 The Codex | Frontend Application Documentation
+# 🌐 BlogApp Frontend
 
-This directory contains the immersive, state-of-the-art client application for **The Codex**. Designed with a luxurious **Gothic Literary Editorial** aesthetic, this React 19 application incorporates beautiful glassmorphism, responsive editorial grids, elegant micro-animations, and unified state management.
+A modern and fully responsive frontend for the **BlogApp MERN platform**, built using **React**, **Vite**, and **Tailwind CSS**.
 
----
-
-## 🛠️ Technology Stack
-
-*   **Core Library:** React 19 (SPA)
-*   **Build Tool:** Vite (v7)
-*   **State Management:** Zustand (v5)
-*   **Routing:** React Router (v7)
-*   **Styling & Aesthetics:**
-    *   **Tailwind CSS (v4)**: Modern compile-time CSS framework using `@tailwindcss/vite`.
-    *   **Framer Motion**: Smooth, high-fidelity responsive transitions and hover micro-animations.
-    *   **Lucide React**: Clean, modern iconography aligned with classic layouts.
-*   **Form Management:** `react-hook-form`
-*   **Alerts & Notifications:** `react-hot-toast`
+This application delivers a smooth blogging experience with secure authentication, article management, responsive layouts, protected routes, and modern UI interactions.
 
 ---
 
-## 🖼️ Gothic Literary Design System
+# 🚀 Live Deployment
 
-The Codex features a highly intentional dark editorial layout:
-*   **Backgrounds:** Deep charcoal obsidian gradients combined with glassmorphic cards.
-*   **Accents:** Crimson and gold velvet transitions mimicking classical library binding details.
-*   **Card UI (`BlogCard.jsx`):** Soft parchment boundaries, glowing dark hover borders, and elegant serif typography.
-*   **Micro-interactions:** Interactive scaling, layout-shifts, and soft opacity transitions powered by Framer Motion.
+| Service      | Status  | Link                                                                   |
+| ------------ | ------- | ---------------------------------------------------------------------- |
+| Frontend App | 🟢 Live | [https://blog-app-1-beta.vercel.app/](https://blog-app-1-beta.vercel.app/) |
 
 ---
 
-## 📁 Application Structure
+# ✨ Features
 
-```text
+## 🔐 Authentication System
+
+* User Registration & Login
+* Persistent Authentication
+* Protected Routes
+* Role-Based Access
+* Secure Cookie-Based Sessions
+
+---
+
+## 📝 Blogging Features
+
+* View all articles
+* Create blog posts
+* Edit articles
+* Add comments
+* Author dashboard
+* Category-based content
+
+---
+
+## 🎨 Modern UI/UX
+
+* Fully Responsive Design
+* Mobile-First Layout
+* Gradient UI Components
+* Glassmorphism Styling
+* Smooth User Experience
+
+---
+
+## ⚡ Performance Optimized
+
+* Vite Fast Bundling
+* Hot Module Reloading (HMR)
+* Optimized Production Builds
+* Reusable Component Architecture
+
+---
+
+# 🛠️ Tech Stack
+
+## Frontend Framework
+
+| Technology     | Purpose               |
+| -------------- | --------------------- |
+| React 19       | Component-Based UI    |
+| Vite           | Fast Build Tool       |
+| Tailwind CSS 4 | Utility-First Styling |
+
+---
+
+## Routing & State Management
+
+| Package      | Purpose                 |
+| ------------ | ----------------------- |
+| React Router | Client-Side Routing     |
+| Zustand      | Global State Management |
+
+---
+
+## API & Forms
+
+| Package         | Purpose             |
+| --------------- | ------------------- |
+| Axios           | API Communication   |
+| React Hook Form | Form Validation     |
+| React Hot Toast | Toast Notifications |
+
+---
+
+# 📦 Dependencies
+
+| Package         | Version |
+| --------------- | ------- |
+| react           | ^19.2.0 |
+| vite            | ^7.3.2  |
+| tailwindcss     | ^4.2.1  |
+| axios           | ^1.13.6 |
+| zustand         | ^5.0.11 |
+| react-router    | ^7.13.1 |
+| react-hook-form | ^7.71.2 |
+| react-hot-toast | ^2.6.0  |
+
+---
+
+# 📂 Project Structure
+
+```bash
 BLOG-FRONTEND/
+│
+├── public/
+│
 ├── src/
-│   ├── assets/          # Gothic themed illustrations & media
-│   ├── components/      # Key visual components & Layouts
-│   │   ├── ui/          # Low-level premium UI elements (e.g., BlogCard)
-│   │   ├── RootLayout   # Global template wrapper with headers & footers
-│   │   ├── Header       # Responsive obsidian navigation header
-│   │   ├── Home         # Multi-author home feed and search portal
-│   │   ├── Login        # Animated secure login form
-│   │   ├── Register     # Animated secure registration form
-│   │   ├── Dashboards/  # Role-specific portals (User, Author, Admin)
-│   │   └── WriteArticle # Article creation form with rich options
-│   ├── lib/             # Utility helpers (e.g., cn tailwind merger)
-│   ├── store/           # Zustand global state stores (e.g., authStore)
-│   ├── axios.js         # Configured Axios instance with credentials
-│   ├── App.jsx          # Route configuration & global setup
-│   └── index.css        # Global CSS variables & Tailwind v4 layers
-├── index.html           # Main HTML shell loading Google fonts (Inter, Playfair)
-└── package.json         # Scripts and project dependencies
+│   ├── assets/
+│   ├── components/
+│   ├── pages/
+│   ├── routes/
+│   ├── store/
+│   ├── styles/
+│   ├── App.jsx
+│   └── main.jsx
+│
+├── .env
+├── index.html
+├── vite.config.js
+├── vercel.json
+├── package.json
+└── package-lock.json
 ```
 
 ---
 
-## 🔑 Environment Configuration
+# ⚙️ Environment Variables
 
-Create a `.env` file in the root of the `BLOG-FRONTEND` directory:
+Create a `.env` file in the root directory:
 
 ```env
-VITE_API_URL=http://localhost:4000
+VITE_API_URL=http://localhost:10000
 ```
 
-*Note: In production (Vercel), this variable must point to your deployed Render backend (e.g., `https://blog-app-1-kny9.onrender.com`).*
+For production:
+
+```env
+VITE_API_URL=https://blog-app-5geq.onrender.com
+```
 
 ---
 
-## 🧠 State Management: Zustand (`authStore.js`)
+# 🚀 Getting Started
 
-The global authorization state is centralized using Zustand. It manages user roles, sessions, loading states, and error alerts:
+## 1️⃣ Install Dependencies
 
-```javascript
-// useAuth Store Actions:
-login(userCredentials) // authenticates user and sets currentUser
-logout()               // terminates session cookie and resets client state
-checkAuth()            // performs automatic background validation on mount/refresh
+```bash
+npm install
 ```
-
-This configuration leverages secure HTTP-Only cookies. The Axios instance automatically transmits sessions securely by setting `withCredentials: true`.
 
 ---
 
-## 🚀 Running the Client Locally
+## 2️⃣ Start Development Server
 
-1.  Navigate to the frontend directory:
-    ```bash
-    cd BLOG-FRONTEND
-    ```
-2.  Install dependencies:
-    ```bash
-    npm install
-    ```
-3.  Launch the Vite development server:
-    ```bash
-    npm run dev
-    ```
-4.  Open the local address in your web browser: `http://localhost:5173`.
+```bash
+npm run dev
+```
 
-### 📦 Building for Production
+This internally runs:
 
-To build the static application bundle optimized for production (Vercel deployment):
+```bash
+vite
+```
+
+---
+
+## 3️⃣ Build for Production
+
 ```bash
 npm run build
 ```
-This generates an optimized static deployment folder inside `dist/`.
+
+---
+
+## 4️⃣ Preview Production Build
+
+```bash
+npm run preview
+```
+
+---
+
+# 🎨 Styling System
+
+## Tailwind CSS 4
+
+The project uses **Tailwind CSS v4** integrated with Vite.
+
+### Design Features
+
+* Responsive Layouts
+* Gradient Buttons
+* Modern Cards
+* Glassmorphism Effects
+* Adaptive Navigation
+* Flexible Grid System
+
+---
+
+# 🧠 State Management
+
+The application uses **Zustand** for lightweight and scalable global state management.
+
+Used for:
+
+* Authentication State
+* User Session Handling
+* Shared App Data
+
+---
+
+# 🌐 API Communication
+
+Frontend communicates with the backend using **Axios**.
+
+Backend URLs are managed using environment variables for:
+
+* Local Development
+* Production Deployment
+
+---
+
+# 🔒 Security Features
+
+✅ Protected Frontend Routes
+✅ Secure Cookie-Based Authentication
+✅ Environment Variable Protection
+✅ Secure API Communication
+✅ CORS-Enabled Backend Integration
+
+---
+
+# 📡 Deployment
+
+
+## 🌐 Frontend Deployment
+- Platform: Vercel
+- Status: Live 🟢
+- Frontend URL: https://blog-app-t4yx.vercel.app/
+- Connected Backend API: https://blog-app-5geq.onrender.comProduction Build using Vite
+
+---
+
+# ⚙️ Vite Configuration
+
+The project uses:
+
+* React Plugin
+* Tailwind Vite Plugin
+
+Configured in:
+
+```bash
+vite.config.js
+```
+
+---
+
+# 📱 Responsive Design
+
+The application is fully responsive across:
+
+* Mobile Devices
+* Tablets
+* Laptops
+* Desktop Screens
+
+### Responsive Features
+
+* Mobile Navigation Menu
+* Adaptive Typography
+* Flexible Layouts
+* Responsive Grids
+
+---
+
+# 🚧 Future Improvements
+
+* Dark Mode
+* Rich Text Editor
+* Search & Filtering
+* Infinite Scrolling
+* Bookmark Articles
+* Like System
+* User Profile Customization
+* Markdown Support
+
+---
+
+# 🤝 Contribution
+
+```bash
+# Fork repository
+
+# Create feature branch
+git checkout -b feature-name
+
+# Commit changes
+git commit -m "Added feature"
+
+# Push changes
+git push origin feature-name
+```
+
+---
+
+# 📜 License
+
+This project is licensed under the ISC License.
+
+---
+
+# 👨‍💻 Author
+
+Developed by Survacy Priya 🚀
