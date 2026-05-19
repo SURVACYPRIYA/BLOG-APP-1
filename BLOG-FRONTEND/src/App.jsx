@@ -3,7 +3,7 @@ import RootLayout from './components/RootLayout'
 import Home from './components/Home'
 import Register from './components/Register'
 import Login from './components/Login'
-import AddArticle from './components/AddArticle'
+
 import UserDashboard from './components/UserDashboard'
 import AuthorDashboard from './components/AuthorDashboard'
 import AdminDashboard from './components/AdminDashboard'
@@ -37,25 +37,25 @@ function App() {
           path:"addarticle",
           element:
           <ProtectedRoute allowedRoles={["AUTHOR"]}>
-            <AddArticle/>
+            <WriteArticle/>
           </ProtectedRoute>,
         },
         {
-          path:"userdashboard",
+          path:"user-dashboard",
           element:
           <ProtectedRoute allowedRoles={["USER"]}>
           <UserDashboard/>
           </ProtectedRoute>,
         },
         {
-          path:"authordashboard",
+          path:"author-dashboard",
           element:
           <ProtectedRoute allowedRoles={["AUTHOR"]}>
           <AuthorDashboard/>
           </ProtectedRoute>,
         },
         {
-          path:"admindashboard",
+          path:"admin-dashboard",
           element:
           <ProtectedRoute allowedRoles={["ADMIN"]}>
           <AdminDashboard/>

@@ -63,7 +63,7 @@ userRoute.get('/articles',verifyToken("USER"),async(req,res,next)=>{
 
 //Add comment to an article
 
-userRoute.post('/articles/:articleId',verifyToken("USER"),async(req,res)=>{
+userRoute.post('/articles/:articleId',verifyToken("USER", "AUTHOR", "ADMIN"),async(req,res)=>{
     const {user, articleId,comment}=req.body
     console.log(req.user)
     if (user != req.user.userId){

@@ -1,25 +1,17 @@
 import { useForm } from "react-hook-form";
-import { useLocation, useNavigate, useParams } from "react-router";
-import { useEffect } from "react";
-import axios from "axios";
+import { useLocation, useNavigate, useParams, Link } from "react-router";
+import { useEffect, useState } from "react";
+import axios from "../axios";
 import { toast } from "react-hot-toast";
-
-import {
-  formCard,
-  formTitle,
-  formGroup,
-  labelClass,
-  inputClass,
-  submitBtn,
-  errorClass,
-} from "../styles/common";
+import { Edit3, ArrowLeft, HelpCircle } from "lucide-react";
 
 function EditArticle() {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
-  const [articleData,setArticleData] = useState(article || null)
   const article = location.state;
+  const [articleData, setArticleData] = useState(article || null);
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -28,84 +20,155 @@ function EditArticle() {
     formState: { errors },
   } = useForm();
 
-  // prefill form
+  // Pre-fill form values
   useEffect(() => {
     if (!articleData) return;
-
     setValue("title", articleData.title);
     setValue("category", articleData.category);
     setValue("content", articleData.content);
-  }, [articleData]);
+  }, [articleData, setValue]);
 
   const updateArticle = async (data) => {
     try {
-
-    await axios.put(
-      `https://blog-app-1-kny9.onrender.com/author-api/article/${id}`,
-      data,
-      { withCredentials:true }
-    )
-
-    toast.success("Article updated successfully")
-
-    navigate("/authordashboard")
-
-  } catch(err){
-    toast.error(err.response?.data?.error || "Update failed")
-  }
+      setLoading(true);
+      await axios.put(`/author-api/article/${id}`, data);
+      toast.success("Story updated successfully!");
+      navigate("/author-dashboard");
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.error || "Failed to update story");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const getArticleById = async ()=>{
-  try{
-    let res = await axios.get(
-      `https://blog-app-1-kny9.onrender.com/author-api/article/${id}`
-    )
-    setArticleData(res.data.payload)
-  }catch(err){
-    console.log(err)
-  }
-}
+  const getArticleById = async () => {
+    try {
+      const res = await axios.get(`/author-api/article/${id}`);
+      setArticleData(res.data.payload);
+    } catch (err) {
+      console.error("Error fetching article for editing:", err);
+      toast.error("Failed to load story data");
+    }
+  };
+
+  useEffect(() => {
+    if (!articleData && id) {
+      getArticleById();
+    }
+  }, [id]);
 
   return (
-    <div className={`${formCard} mt-10`}>
-      <h2 className={formTitle}>Edit Article</h2>
+    <div className="w-full bg-[#fcfbf9] -mt-20 py-12 text-left">
+      <div className="container mx-auto px-6 md:px-12 max-w-3xl pt-24">
+        {/* Navigation back anchor */}
+        <Link
+          to="/author-dashboard"
+          className="inline-flex items-center gap-2 text-slate-400 hover:text-rose-500 transition-colors text-xs font-sans uppercase font-bold tracking-wider mb-8"
+        >
+          <ArrowLeft size={14} />
+          <span>Back to Workspace</span>
+        </Link>
 
-      <form onSubmit={handleSubmit(updateArticle)}>
-        {/* Title */}
-        <div className={formGroup}>
-          <label className={labelClass}>Title</label>
+        {/* Form Container Card */}
+        <div className="bg-white rounded-[2rem] border border-slate-100 p-8 sm:p-12 shadow-md">
+          <div className="flex items-center gap-2 mb-3 bg-rose-50 border border-rose-100 px-3 py-1 rounded-full text-rose-500 font-sans text-[10px] uppercase tracking-wider font-extrabold max-w-max">
+            <Edit3 size={12} />
+            <span>Story Revision</span>
+          </div>
 
-          <input className={inputClass} {...register("title", { required: "Title required" })} />
+          <h2 className="font-serif text-3xl font-bold text-slate-900 mb-2">
+            Revise Story
+          </h2>
+          <p className="text-xs text-slate-400 mb-8 pb-6 border-b border-slate-100">
+            Make edits and polish the contents of your published creative story.
+          </p>
 
-          {errors.title && <p className={errorClass}>{errors.title.message}</p>}
+          <form onSubmit={handleSubmit(updateArticle)} className="space-y-6">
+            {/* Title */}
+            <div>
+              <label className="block font-sans text-[10px] uppercase tracking-wider font-bold text-slate-400 mb-2 ml-3">
+                Story Title / Headline
+              </label>
+              <input
+                type="text"
+                required
+                placeholder="Enter story title"
+                {...register("title", {
+                  required: "Story Title is required",
+                  minLength: {
+                    value: 5,
+                    message: "Title must be at least 5 characters long",
+                  },
+                })}
+                className="w-full bg-white border border-slate-200 px-5.5 py-3.5 rounded-full text-xs font-sans focus:outline-none focus:border-rose-500 shadow-sm focus:bg-white"
+              />
+              {errors.title && <p className="text-red-500 text-[10px] mt-1.5 ml-4">{errors.title.message}</p>}
+            </div>
+
+            {/* Category Dropdown */}
+            <div>
+              <label className="block font-sans text-[10px] uppercase tracking-wider font-bold text-slate-400 mb-2 ml-3">
+                Story Category
+              </label>
+              <select
+                required
+                {...register("category", { required: "Story Category is required" })}
+                className="w-full bg-white border border-slate-200 px-5.5 py-3.5 rounded-full text-xs font-sans focus:outline-none focus:border-rose-500 shadow-sm cursor-pointer focus:bg-white"
+              >
+                <option value="">Select Category</option>
+                <option value="Lifestyle">Lifestyle</option>
+                <option value="Programming">Programming</option>
+                <option value="Travel">Travel</option>
+                <option value="Personal Growth">Personal Growth</option>
+                <option value="Productivity">Productivity</option>
+                <option value="Technology">Technology</option>
+                <option value="Health">Health</option>
+              </select>
+              {errors.category && <p className="text-red-500 text-[10px] mt-1.5 ml-4">{errors.category.message}</p>}
+            </div>
+
+            {/* Content Textarea */}
+            <div>
+              <label className="block font-sans text-[10px] uppercase tracking-wider font-bold text-slate-400 mb-2 ml-3">
+                Manuscript Content (Markdown supported)
+              </label>
+              <textarea
+                required
+                rows="10"
+                placeholder="Write your story content here..."
+                {...register("content", {
+                  required: "Manuscript content is required",
+                  minLength: {
+                    value: 50,
+                    message: "Manuscript content must be at least 50 characters",
+                  },
+                })}
+                className="w-full bg-white border border-slate-200 p-6 rounded-3xl text-sm font-serif leading-relaxed focus:outline-none focus:border-rose-500 shadow-sm focus:bg-white"
+              />
+              {errors.content && <p className="text-red-500 text-[10px] mt-1.5 ml-4">{errors.content.message}</p>}
+            </div>
+
+            {/* Guidelines Help Tip */}
+            <div className="flex gap-3 bg-slate-50 p-4.5 rounded-2xl border border-slate-100 text-xs text-slate-400">
+              <HelpCircle size={17} className="text-rose-500 shrink-0 mt-0.5" />
+              <p className="leading-relaxed">
+                <strong>Publication Standard:</strong> Double-check paragraphs and formatting. Standard peer review guidelines will re-validate upon publishing these updates.
+              </p>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-rose-500 hover:bg-rose-600 text-white font-sans text-xs uppercase tracking-widest font-bold py-4 rounded-full flex items-center justify-center gap-2 shadow-md shadow-rose-500/10 hover:shadow-lg transition-all duration-300 mt-8 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Edit3 size={14} />
+              <span>{loading ? "Saving Story Updates..." : "Save Story Updates"}</span>
+            </button>
+          </form>
         </div>
-
-        {/* Category */}
-        <div className={formGroup}>
-          <label className={labelClass}>Category</label>
-
-          <select className={inputClass} {...register("category", { required: "Category required" })}>
-            <option value="">Select category</option>
-            <option value="technology">Technology</option>
-            <option value="programming">Programming</option>
-            <option value="ai">AI</option>
-            <option value="web-development">Web Development</option>
-          </select>
-
-          {errors.category && <p className={errorClass}>{errors.category.message}</p>}
-        </div>
-
-        {/* Content */}
-        <div className={formGroup}>
-          <label className={labelClass}>Content</label>
-
-          <textarea rows="14" className={inputClass} {...register("content", { required: "Content required" })} />
-
-          {errors.content && <p className={errorClass}>{errors.content.message}</p>}
-        </div>
-
-        <button className={submitBtn}>Update Article</button>
-      </form>
+      </div>
     </div>
   );
 }

@@ -1,23 +1,215 @@
-import { NavLink } from "react-router"
+import { NavLink, Link, useNavigate } from "react-router";
+import { useAuth } from "../store/authStore";
+import { useState, useEffect } from "react";
+import { LogOut, PenSquare, User, Menu, X } from "lucide-react";
 
 function Header() {
-  return (
-     <div className="flex justify-around items-center bg-gray-300">
-        <img width="80px" className="p-2" src="data:image/png;base64,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" alt="" />
+  const { currentUser, logout } = useAuth();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
-        <ul className="flex gap-10 text-2xl">
-            <li>
-                <NavLink to="" className={({isActive})=>isActive?"text-blue-100 bg-blue-500 p-2":""} >Home</NavLink>
-            </li>
-            <li>
-                <NavLink to="register" className={({isActive})=>isActive?"text-blue-100 bg-blue-500 p-2":""}>Register</NavLink>
-            </li>
-            <li>
-                <NavLink to="login" className={({isActive})=>isActive?"text-blue-100 bg-blue-500 p-2":""}>Login</NavLink>
-            </li>
-        </ul>
-    </div>
-  )
+  // Scroll detection for sticky glass transition
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
+
+  const getDashboardPath = () => {
+    if (!currentUser) return "/";
+    if (currentUser.role === "admin") return "/admin-dashboard";
+    if (currentUser.role === "author") return "/author-dashboard";
+    return "/user-dashboard";
+  };
+
+  const Logo = () => (
+    <Link to="/" className="flex items-center gap-1.5 group select-none">
+      <span className="font-sans font-extrabold text-2xl tracking-tighter text-slate-900 group-hover:text-rose-500 transition-colors duration-300">
+        Blogr
+      </span>
+      <span className="w-2.5 h-2.5 rounded-full bg-rose-500 group-hover:scale-125 transition-transform duration-300 -mt-1.5"></span>
+    </Link>
+  );
+
+  return (
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? "glass shadow-sm py-3.5 bg-white/90"
+          : "bg-transparent py-6"
+      }`}
+    >
+      <div className="container mx-auto px-6 md:px-12 flex justify-between items-center">
+        {/* Left Side: Brand Logo */}
+        <Logo />
+
+        {/* Center: Navigation Links */}
+        <nav className="hidden lg:flex items-center gap-7 font-sans font-medium text-[13px] tracking-wide text-slate-600">
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              `hover:text-rose-500 transition-colors relative py-1 ${
+                isActive ? "text-rose-500 font-semibold" : ""
+              }`
+            }
+          >
+            Home
+          </NavLink>
+
+
+
+
+        </nav>
+
+        <div className="hidden lg:flex items-center gap-5">
+
+
+          {currentUser ? (
+            <div className="flex items-center gap-4">
+              {/* Write treatise trigger */}
+              {(currentUser.role?.toUpperCase() === "AUTHOR" || currentUser.role?.toUpperCase() === "ADMIN") && (
+                <Link
+                  to="/write-article"
+                  className="flex items-center gap-2 px-4.5 py-2 rounded-full border border-rose-200 text-rose-500 hover:bg-rose-50 font-sans text-xs tracking-wider uppercase font-semibold transition-all duration-300 shadow-sm"
+                >
+                  <PenSquare size={13} />
+                  <span>Write</span>
+                </Link>
+              )}
+
+              {/* User profile avatar */}
+              <Link
+                to={getDashboardPath()}
+                className="flex items-center gap-2 group cursor-pointer"
+              >
+                <div className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center text-rose-500 font-bold border border-rose-200 group-hover:bg-rose-500 group-hover:text-white transition-all duration-300">
+                  <User size={15} />
+                </div>
+                <span className="font-sans text-xs text-slate-800 font-medium group-hover:text-rose-500 transition-colors tracking-wide">
+                  {currentUser.firstName || currentUser.name?.split(" ")[0]}
+                </span>
+              </Link>
+
+              {/* Logout button */}
+              <button
+                onClick={handleLogout}
+                className="text-slate-400 hover:text-red-500 transition-colors p-1 cursor-pointer"
+                title="Logout"
+              >
+                <LogOut size={17} />
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <Link
+                to="/login"
+                className="text-slate-600 hover:text-rose-500 font-sans text-xs font-semibold tracking-wide py-2 px-3 transition-colors"
+              >
+                Sign In
+              </Link>
+              <Link
+                to="/register"
+                className="bg-rose-500 text-white hover:bg-rose-600 font-sans text-xs font-semibold tracking-wide py-2.5 px-6.5 rounded-full shadow-md shadow-rose-500/10 hover:shadow-lg transition-all duration-300"
+              >
+                Register
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* Mobile Hamburger Trigger */}
+        <div className="lg:hidden flex items-center">
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="text-slate-800 hover:text-rose-500 transition-colors p-1"
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu Drawer */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden absolute top-full left-0 right-0 bg-white/95 glass border-t border-slate-100 py-6 px-8 flex flex-col gap-4.5 shadow-lg max-h-[85vh] overflow-y-auto">
+          <Link
+            to="/"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="font-sans font-semibold text-base text-slate-800 hover:text-rose-500 transition-colors"
+          >
+            Home
+          </Link>
+
+
+
+          {currentUser ? (
+            <>
+
+              {(currentUser.role?.toUpperCase() === "AUTHOR" || currentUser.role?.toUpperCase() === "ADMIN") && (
+                <>
+                  <Link
+                    to="/write-article"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center gap-2 font-sans font-semibold text-base text-rose-500"
+                  >
+                    <PenSquare size={17} />
+                    <span>Write Article</span>
+                  </Link>
+                  <hr className="border-slate-100 my-1" />
+                </>
+              )}
+              <div className="flex items-center justify-between">
+                <span className="font-sans text-xs text-slate-400">
+                  Signed in as {currentUser.firstName || currentUser.name}
+                </span>
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="flex items-center gap-1 font-sans text-xs uppercase tracking-wider font-bold text-red-500"
+                >
+                  <LogOut size={13} />
+                  <span>Sign Out</span>
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <hr className="border-slate-100 my-1" />
+              <div className="flex flex-col gap-3 font-sans text-xs uppercase tracking-wider font-semibold text-center">
+                <Link
+                  to="/login"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="border border-slate-200 py-3 rounded-full text-slate-700 hover:bg-slate-50 transition-all"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  to="/register"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="bg-rose-500 text-white py-3 rounded-full hover:bg-rose-600 transition-all shadow-md shadow-rose-500/10"
+                >
+                  Register
+                </Link>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+    </header>
+  );
 }
 
-export default Header
+export default Header;

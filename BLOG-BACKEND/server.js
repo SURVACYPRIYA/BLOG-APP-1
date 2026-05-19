@@ -19,9 +19,21 @@ app.get("/", (req, res) => {
 });
 
 //use cors middleware
+const allowedOrigins = [
+  "https://blog-app-1-beta.vercel.app",
+  "http://localhost:5173",
+  "http://127.0.0.1:5173"
+];
+
 app.use(
   cors({
-    origin: "https://blog-app-1-beta.vercel.app",
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
